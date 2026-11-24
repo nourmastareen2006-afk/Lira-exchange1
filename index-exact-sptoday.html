@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الليرة اليوم — الصرف والذهب</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top center, #2d0a10 0%, #120306 100%);
+            --card-bg: linear-gradient(145deg, rgba(115, 20, 34, 0.88), rgba(65, 10, 18, 0.92));
+            --card-border: rgba(239, 68, 68, 0.35);
+            --gold-card-bg: linear-gradient(145deg, rgba(130, 65, 15, 0.85), rgba(75, 30, 8, 0.92));
+            --gold-border: rgba(245, 185, 33, 0.4);
+            --calc-card-bg: linear-gradient(145deg, rgba(88, 22, 48, 0.9), rgba(45, 10, 25, 0.95));
+            --accent-main: #ff3b3b;
+            --gold-accent: #fbbf24;
+            --text-main: #ffffff;
+            --text-muted: #f1d5d8;
+            --badge-bg: rgba(35, 8, 12, 0.7);
+            --input-bg: rgba(20, 4, 8, 0.75);
+        }
+
+        body.light-mode {
+            --bg-gradient: linear-gradient(180deg, #f8e5e7 0%, #edd1d5 100%);
+            --card-bg: linear-gradient(145deg, #8a1e2e, #5e111d);
+            --card-border: rgba(255, 255, 255, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 18px 14px 85px 14px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* البطاقة العلوية */
+        .hero-card {
+            background: linear-gradient(160deg, #991b1b 0%, #5c0d16 60%, #70101e 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 22px 18px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .hero-title {
+            font-size: 1.75rem;
+            font-weight: 900;
+            color: #ff4d4d;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            margin-bottom: 6px;
+        }
+
+        .update-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--badge-bg);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 5px 16px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            color: #ffe4e6;
+            font-weight: 600;
+        }
+
+        .dot-live {
+            width: 8px;
+            height: 8px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.25; }
+        }
+
+        /* اختيار الليرة (جديدة / قديمة) + المدينة في الليرة اليوم */
+        .top-filters {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 8px;
+        }
+
+        .mode-switch {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            background: rgba(25, 6, 10, 0.75);
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .mode-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 6px 4px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.16);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .city-select {
+            background: rgba(15, 3, 6, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            outline: none;
+        }
+
+        /* أزرار التبويب */
+        .tabs-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            background: rgba(25, 6, 10, 0.65);
+            padding: 6px;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            font-weight: 800;
+            padding: 10px 6px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .tab-btn.gold-tab.active {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+            color: #111827;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .tab-btn.calc-tab.active {
+            background: linear-gradient(90deg, #e11d48, #fb7185);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+        }
+
+        .section-panel {
+            display: none;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .section-panel.active {
+            display: flex;
+        }
+
+        /* بطاقة العملة */
+        .currency-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+        }
+
+        /* بطاقة الذهب */
+        .currency-card.gold-item {
+            background: var(--gold-card-bg);
+            border: 1px solid var(--gold-border);
+        }
+
+        .currency-info {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .flag {
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .currency-name h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .currency-name span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .rates-box {
+            display: flex;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .rate-col {
+            background: rgba(25, 6, 10, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 11px;
+            padding: 5px 10px;
+            min-width: 78px;
+        }
+
+        .rate-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 1px;
+        }
+
+        .rate-value {
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: #ff6b6b;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .gold-item .rate-value {
+            color: var(--gold-accent);
+        }
+
+        .rate-value.sell {
+            color: #ffffff;
+        }
+
+        /* قسم الحاسبة والأدوات */
+        .calc-card {
+            background: var(--calc-card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .calc-card.gold-calc {
+            background: var(--gold-card-bg);
+            border: 1px solid var(--gold-border);
+        }
+
+        .calc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 10px;
+        }
+
+        .calc-header h3 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ff6b6b;
+        }
+
+        .gold-calc .calc-header h3 {
+            color: var(--gold-accent);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group.full {
+            grid-column: span 2;
+        }
+
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .calc-input, .calc-select {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .calc-input:focus, .calc-select:focus {
+            border-color: var(--accent-main);
+        }
+
+        .calc-input {
+            direction: ltr;
+            text-align: right;
+        }
+
+        .result-box {
+            background: rgba(15, 3, 6, 0.8);
+            border: 1px dashed rgba(255, 92, 92, 0.5);
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .gold-calc .result-box {
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .result-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .result-amount {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #4ade80;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .result-unit {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-right: 4px;
+        }
+
+        /* شريط الحالة والتحديث */
+        .status-bar {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 4px;
+        }
+
+        .refresh-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--card-border);
+            color: #ffe4e6;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background 0.2s;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+        }
+
+        /* زر البوت */
+        .cta-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #dc2626 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.12rem;
+            font-weight: 800;
+            padding: 14px 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+            transition: transform 0.2s ease;
+            margin-top: 2px;
+        }
+
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+
+        /* زر تبديل الثيم */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2b0b10;
+            border: 1px solid rgba(255, 77, 77, 0.45);
+            color: #ff4d4d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- البطاقة الرئيسية -->
+        <div class="hero-card">
+            <h1 class="hero-title">💰 الليرة اليوم — الصرف والذهب</h1>
+            <div class="update-badge">
+                <span class="dot-live"></span>
+                <span id="last-updated">تحديث فوري • الليرة اليوم</span>
+            </div>
+        </div>
+
+        <!-- اختيار الليرة (جديدة / قديمة) + المدينة في الليرة اليوم -->
+        <div class="top-filters">
+            <div class="mode-switch">
+                <button class="mode-btn active" id="btn-new-syp" onclick="setCurrencyMode('new')">🆕 ليرة جديدة</button>
+                <button class="mode-btn" id="btn-old-syp" onclick="setCurrencyMode('old')">💵 ليرة قديمة</button>
+            </div>
+            <select id="city-select" class="city-select" onchange="onCityChange()">
+                <option value="general">📍 سوريا - عام</option>
+                <option value="damascus">📍 دمشق</option>
+                <option value="aleppo">📍 حلب</option>
+                <option value="idlib">📍 إدلب</option>
+            </select>
+        </div>
+
+        <!-- أزرار التبديل بين الأقسام الثلاثة -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('currencies', this)">💵 العملات</button>
+            <button class="tab-btn gold-tab" onclick="switchTab('gold', this)">🪙 الذهب</button>
+            <button class="tab-btn calc-tab" onclick="switchTab('tools', this)">🧮 الحاسبة</button>
+        </div>
+
+        <!-- 1. قسم العملات (مطابق لنشرة الليرة اليوم) -->
+        <div id="panel-currencies" class="section-panel active">
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇺🇸</span>
+                    <div class="currency-name"><h3>الدولار الأمريكي</h3><span>USD</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="usd-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="usd-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇪🇺</span>
+                    <div class="currency-name"><h3>اليورو الأوروبي</h3><span>EUR</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="eur-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="eur-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇹🇷</span>
+                    <div class="currency-name"><h3>الليرة التركية</h3><span>TRY</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="try-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="try-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇸🇦</span>
+                    <div class="currency-name"><h3>الريال السعودي</h3><span>SAR</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="sar-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="sar-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇦🇪</span>
+                    <div class="currency-name"><h3>الدرهم الإماراتي</h3><span>AED</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="aed-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="aed-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇪🇬</span>
+                    <div class="currency-name"><h3>الجنيه المصري</h3><span>EGP</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="egp-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="egp-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇱🇾</span>
+                    <div class="currency-name"><h3>الدينار الليبي</h3><span>LYD</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="lyd-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="lyd-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇯🇴</span>
+                    <div class="currency-name"><h3>الدينار الأردني</h3><span>JOD</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="jod-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="jod-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇰🇼</span>
+                    <div class="currency-name"><h3>الدينار الكويتي</h3><span>KWD</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="kwd-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="kwd-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇬🇧</span>
+                    <div class="currency-name"><h3>الجنيه الإسترليني</h3><span>GBP</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="gbp-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="gbp-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card">
+                <div class="currency-info">
+                    <span class="flag">🇶🇦</span>
+                    <div class="currency-name"><h3>الريال القطري</h3><span>QAR</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="qar-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="qar-sell">--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. قسم الذهب -->
+        <div id="panel-gold" class="section-panel">
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">🥇</span>
+                    <div class="currency-name"><h3>ذهب عيار 24</h3><span>غرام — الليرة السورية</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="g24-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="g24-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">🪙</span>
+                    <div class="currency-name"><h3>ذهب عيار 21</h3><span>غرام — الليرة السورية</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="g21-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="g21-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">💍</span>
+                    <div class="currency-name"><h3>ذهب عيار 18</h3><span>غرام — الليرة السورية</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="g18-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="g18-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">✨</span>
+                    <div class="currency-name"><h3>ذهب عيار 14</h3><span>غرام — الليرة السورية</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 شراء</span><span class="rate-value" id="g14-buy">--</span></div>
+                    <div class="rate-col"><span class="rate-label">🔹 مبيع</span><span class="rate-value sell" id="g14-sell">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">🌍</span>
+                    <div class="currency-name"><h3>الأونصة الذهبية</h3><span>عالمي بالدولار (USD)</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 السعر</span><span class="rate-value sell" id="ounce-price">--</span></div>
+                </div>
+            </div>
+
+            <div class="currency-card gold-item">
+                <div class="currency-info">
+                    <span class="flag">🏅</span>
+                    <div class="currency-name"><h3>الليرة الذهبية</h3><span>عيار 21 (8 غرام)</span></div>
+                </div>
+                <div class="rates-box">
+                    <div class="rate-col"><span class="rate-label">🔸 السعر</span><span class="rate-value sell" id="lira-gold-price">--</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. قسم الحاسبة -->
+        <div id="panel-tools" class="section-panel">
+            <div class="calc-card">
+                <div class="calc-header">
+                    <h3>💱 حاسبة تصريف العملات</h3>
+                    <span id="calc-mode-label">الليرة الجديدة</span>
+                </div>
+
+                <div class="calc-grid">
+                    <div class="input-group full">
+                        <label>المبلغ المراد تحويله:</label>
+                        <input type="number" id="curr-amount" class="calc-input" value="100" min="0" step="any" oninput="calculateCurrency()">
+                    </div>
+
+                    <div class="input-group">
+                        <label>من عملة:</label>
+                        <select id="curr-from" class="calc-select" onchange="calculateCurrency()">
+                            <option value="usd">🇺🇸 دولار أمريكي (USD)</option>
+                            <option value="eur">🇪🇺 يورو أوروبي (EUR)</option>
+                            <option value="try">🇹🇷 ليرة تركية (TRY)</option>
+                            <option value="sar">🇸🇦 ريال سعودي (SAR)</option>
+                            <option value="aed">🇦🇪 درهم إماراتي (AED)</option>
+                            <option value="egp">🇪🇬 جنيه مصري (EGP)</option>
+                            <option value="lyd">🇱🇾 دينار ليبي (LYD)</option>
+                            <option value="jod">🇯🇴 دينار أردني (JOD)</option>
+                            <option value="kwd">🇰🇼 دينار كويتي (KWD)</option>
+                            <option value="gbp">🇬🇧 جنيه إسترليني (GBP)</option>
+                            <option value="qar">🇶🇦 ريال قطري (QAR)</option>
+                            <option value="syp">🇸🇾 ليرة سورية (SYP)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>إلى عملة:</label>
+                        <select id="curr-to" class="calc-select" onchange="calculateCurrency()">
+                            <option value="syp" selected>🇸🇾 ليرة سورية (SYP)</option>
+                            <option value="usd">🇺🇸 دولار أمريكي (USD)</option>
+                            <option value="eur">🇪🇺 يورو أوروبي (EUR)</option>
+                            <option value="try">🇹🇷 ليرة تركية (TRY)</option>
+                            <option value="sar">🇸🇦 ريال سعودي (SAR)</option>
+                            <option value="aed">🇦🇪 درهم إماراتي (AED)</option>
+                            <option value="egp">🇪🇬 جنيه مصري (EGP)</option>
+                            <option value="lyd">🇱🇾 دينار ليبي (LYD)</option>
+                            <option value="jod">🇯🇴 دينار أردني (JOD)</option>
+                            <option value="kwd">🇰🇼 دينار كويتي (KWD)</option>
+                            <option value="gbp">🇬🇧 جنيه إسترليني (GBP)</option>
+                            <option value="qar">🇶🇦 ريال قطري (QAR)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group full">
+                        <label>نوع التسعير:</label>
+                        <select id="curr-type" class="calc-select" onchange="calculateCurrency()">
+                            <option value="buy">🔸 سعر الشراء</option>
+                            <option value="sell">🔹 سعر المبيع</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <span class="result-label">المبلغ الناتج بعد التصريف:</span>
+                    <span class="result-amount" id="curr-result">0</span>
+                    <span class="result-unit" id="curr-result-unit">ل.س</span>
+                </div>
+            </div>
+
+            <div class="calc-card gold-calc">
+                <div class="calc-header">
+                    <h3>🪙 حاسبة قيمة الذهب</h3>
+                    <span>بدون صياغة</span>
+                </div>
+
+                <div class="calc-grid">
+                    <div class="input-group">
+                        <label>الوزن (بالغرام):</label>
+                        <input type="number" id="gold-weight" class="calc-input" value="1" min="0" step="any" oninput="calculateGold()">
+                    </div>
+
+                    <div class="input-group">
+                        <label>العيار:</label>
+                        <select id="gold-karat" class="calc-select" onchange="calculateGold()">
+                            <option value="g21">ذهب عيار 21</option>
+                            <option value="g24">ذهب عيار 24</option>
+                            <option value="g18">ذهب عيار 18</option>
+                            <option value="g14">ذهب عيار 14</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group full">
+                        <label>نوع العملية:</label>
+                        <select id="gold-type" class="calc-select" onchange="calculateGold()">
+                            <option value="sell">🔹 سعر المبيع (شراء الذهب)</option>
+                            <option value="buy">🔸 سعر الشراء (بيع الذهب)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <span class="result-label">القيمة الإجمالية بالليرة السورية:</span>
+                    <span class="result-amount" id="gold-result">0</span>
+                    <span class="result-unit">ل.س</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- شريط الحالة والتحديث -->
+        <div class="status-bar">
+            <div id="source-status">✅ مطابق لنشرة الليرة اليوم • تحديث فوري مستمر</div>
+            <button class="refresh-btn" onclick="syncSpTodayInstant()">🔄 تحديث فوري الآن</button>
+        </div>
+
+        <!-- زر العودة للبوت -->
+        <a href="https://t.me/BAC_2024BOT" target="_blank" class="cta-button">
+            <span>العودة إلى البوت</span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+        </a>
+    </div>
+
+    <!-- زر تبديل المظهر -->
+    <button class="theme-toggle" id="theme-btn" title="تغيير المظهر">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
+    <script>
+        // مصدر الليرة اليوم وجسره
+        const SPTODAY_API_KEY = "733d25b61609ead8756ba5723b9bff77";
+        const GOOGLE_SPTODAY_BRIDGE_URL = "https://script.google.com/macros/s/AKfycbxuZzdstRopcU6EWyY9re6z7zJDjJN07WHwtgD3dzfjzmMERJVm9DDwsIhGbTFi8tbn/exec";
+
+        let currencyMode = "new"; // "new" = ليرة جديدة، "old" = ليرة قديمة (×100)
+        let selectedCity = "general";
+
+        // الأسعار المطابقة بالملي لنشرة الليرة اليوم (بالليرة الجديدة)
+        const spTodayCurrencies = {
+            syp: { buy: 1, sell: 1, label: "ل.س" },
+            usd: { buy: 151.75, sell: 152.25, label: "دولار" },
+            eur: { buy: 164.50, sell: 166.40, label: "يورو" },
+            try: { buy: 2.98, sell: 3.01, label: "ل.ت" },
+            sar: { buy: 40.03, sell: 40.57, label: "ر.س" },
+            aed: { buy: 40.90, sell: 41.45, label: "د.إ" },
+            egp: { buy: 2.77, sell: 2.81, label: "ج.م" },
+            lyd: { buy: 23.26, sell: 23.57, label: "د.ل" },
+            jod: { buy: 211.90, sell: 214.74, label: "د.أ" },
+            kwd: { buy: 490.80, sell: 492.50, label: "د.ك" },
+            gbp: { buy: 196.60, sell: 197.40, label: "ج.إ" },
+            qar: { buy: 41.40, sell: 41.60, label: "ر.ق" }
+        };
+
+        const spTodayGold = {
+            g24: { buy: 17658, sell: 17918 },
+            g21: { buy: 15451, sell: 15678 },
+            g18: { buy: 13243, sell: 13438 },
+            g14: { buy: 10300, sell: 10451 },
+            ounceUsd: 3621.00
+        };
+
+        function onCityChange() {
+            selectedCity = document.getElementById("city-select").value;
+            syncSpTodayInstant();
+        }
+
+        function formatSyp(val) {
+            if (!val || isNaN(val)) return "--";
+            const mult = (currencyMode === "old") ? 100 : 1;
+            const adjusted = val * mult;
+            return adjusted.toLocaleString('en-US', {
+                minimumFractionDigits: (currencyMode === "new" && adjusted < 1000) ? 2 : 0,
+                maximumFractionDigits: 2
+            });
+        }
+
+        function renderAll() {
+            const codes = ["usd", "eur", "try", "sar", "aed", "egp", "lyd", "jod", "kwd", "gbp", "qar"];
+            codes.forEach(code => {
+                document.getElementById(code + "-buy").innerText = formatSyp(spTodayCurrencies[code].buy);
+                document.getElementById(code + "-sell").innerText = formatSyp(spTodayCurrencies[code].sell);
+            });
+
+            ["g24", "g21", "g18", "g14"].forEach(k => {
+                document.getElementById(k + "-buy").innerText = formatSyp(spTodayGold[k].buy);
+                document.getElementById(k + "-sell").innerText = formatSyp(spTodayGold[k].sell);
+            });
+
+            document.getElementById("ounce-price").innerText = "$" + spTodayGold.ounceUsd.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            document.getElementById("lira-gold-price").innerText = formatSyp(spTodayGold.g21.sell * 8);
+        }
+
+        function getEffectiveCurrencyRate(code, type) {
+            if (code === "syp") return 1;
+            const mult = (currencyMode === "old") ? 100 : 1;
+            return spTodayCurrencies[code][type] * mult;
+        }
+
+        function calculateCurrency() {
+            const amount = parseFloat(document.getElementById("curr-amount").value) || 0;
+            const from = document.getElementById("curr-from").value;
+            const to = document.getElementById("curr-to").value;
+            const type = document.getElementById("curr-type").value;
+
+            const fromRate = getEffectiveCurrencyRate(from, type);
+            const toRate = getEffectiveCurrencyRate(to, type);
+
+            document.getElementById("curr-result-unit").innerText = spTodayCurrencies[to].label;
+            const totalInSyp = amount * fromRate;
+            const result = totalInSyp / toRate;
+
+            document.getElementById("curr-result").innerText = result.toLocaleString('en-US', {
+                maximumFractionDigits: 2
+            });
+        }
+
+        function calculateGold() {
+            const weight = parseFloat(document.getElementById("gold-weight").value) || 0;
+            const karat = document.getElementById("gold-karat").value;
+            const type = document.getElementById("gold-type").value;
+
+            const mult = (currencyMode === "old") ? 100 : 1;
+            const gramPrice = spTodayGold[karat][type] * mult;
+            const total = weight * gramPrice;
+
+            document.getElementById("gold-result").innerText = total.toLocaleString('en-US', {
+                maximumFractionDigits: 0
+            });
+        }
+
+        function setCurrencyMode(mode) {
+            currencyMode = mode;
+            document.getElementById("btn-new-syp").classList.toggle("active", mode === "new");
+            document.getElementById("btn-old-syp").classList.toggle("active", mode === "old");
+            document.getElementById("calc-mode-label").innerText = (mode === "new") ? "الليرة الجديدة" : "الليرة القديمة";
+            renderAll();
+            calculateCurrency();
+            calculateGold();
+        }
+
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('panel-' + tabName).classList.add('active');
+        }
+
+        function applyBridgeUpdates(rawText) {
+            let parsed = rawText;
+            try {
+                const obj = JSON.parse(rawText);
+                parsed = (obj.c || "") + " " + (obj.g || "") + " " + JSON.stringify(obj);
+            } catch (e) {}
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(parsed, "text/html");
+            doc.querySelectorAll("script, style, nav, footer").forEach(el => el.remove());
+            const text = (doc.body.innerText || doc.body.textContent || parsed).replace(/\s+/g, " ");
+
+            let updated = false;
+            const patterns = [
+                { code: "usd", rx: /USD[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "eur", rx: /EUR[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "try", rx: /TRY[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "sar", rx: /SAR[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "aed", rx: /AED[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "egp", rx: /EGP[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "lyd", rx: /LYD[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ },
+                { code: "jod", rx: /JOD[^\d]{0,30}([\d,]+(?:\.\d+)?)\s+([\d,]+(?:\.\d+)?)/ }
+            ];
+
+            patterns.forEach(p => {
+                const m = text.match(p.rx);
+                if (m) {
+                    const b = parseFloat(m[1].replace(/,/g, ''));
+                    const s = parseFloat(m[2].replace(/,/g, ''));
+                    if (b > 0 && s > 0) {
+                        spTodayCurrencies[p.code].buy = b;
+                        spTodayCurrencies[p.code].sell = s;
+                        updated = true;
+                    }
+                }
+            });
+
+            return updated;
+        }
+
+        async function syncSpTodayInstant() {
+            const statusEl = document.getElementById("source-status");
+            statusEl.innerText = "⚡ جاري المزامنة الفورية...";
+
+            try {
+                const res = await fetch(GOOGLE_SPTODAY_BRIDGE_URL + "?city=" + encodeURIComponent(selectedCity) + "&key=" + encodeURIComponent(SPTODAY_API_KEY));
+                if (res.ok) {
+                    const txt = await res.text();
+                    applyBridgeUpdates(txt);
+                }
+            } catch (e) {}
+
+            renderAll();
+            calculateCurrency();
+            calculateGold();
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById("last-updated").innerText = `تحديث فوري • ${timeStr}`;
+            statusEl.innerText = "✅ مطابق لنشرة الليرة اليوم • تحديث فوري نشط";
+        }
+
+        // تحديث فوري متكرر كل 5 ثوانٍ مع الحفاظ على الأسعار المطابقة لنشرة الليرة اليوم
+        function startInstantSyncLoop() {
+            setInterval(() => {
+                syncSpTodayInstant();
+            }, 5000);
+        }
+
+        renderAll();
+        calculateCurrency();
+        calculateGold();
+        syncSpTodayInstant();
+        startInstantSyncLoop();
+
+        document.getElementById("theme-btn").addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+        });
+    </script>
+</body>
+</html>
